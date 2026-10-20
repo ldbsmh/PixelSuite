@@ -157,14 +157,14 @@ final class RestartPill {
         String text;
         synchronized (pending) {
             if (pending.isEmpty()) { hide(false); return; }
-            text = pending.size() == 1 ? "Restart " + pending.values().iterator().next() : "Restart " + pending.size() + " apps";
+            text = pending.size() == 1 ? "重启 " + Zh.t(pending.values().iterator().next()) : "重启 " + pending.size() + " 个应用";
         }
         main.removeCallbacks(finishDone);
         pill.animate().cancel();label.animate().cancel();label.setAlpha(1f);label.setTranslationY(0);
         ViewGroup.LayoutParams width=pill.getLayoutParams();width.width=ViewGroup.LayoutParams.WRAP_CONTENT;pill.setLayoutParams(width);
         LinearLayout.LayoutParams textSize=(LinearLayout.LayoutParams)label.getLayoutParams();textSize.width=ViewGroup.LayoutParams.WRAP_CONTENT;textSize.weight=0;label.setLayoutParams(textSize);
         label.setText(text);status.show(0);
-        pill.setContentDescription(text + ". Applies your changes. Long-press to hide.");
+        pill.setContentDescription(text + "。应用你的更改。长按可隐藏。");
         if(notice.getVisibility()==View.VISIBLE){pill.setVisibility(View.INVISIBLE);return;}
         if (pill.getVisibility() == View.VISIBLE) return;
         pill.setVisibility(View.VISIBLE);
@@ -202,7 +202,7 @@ final class RestartPill {
             main.postDelayed(new Runnable() { public void run() {
                 busy = false;
                 if (activity.isFinishing() || activity.isDestroyed()) return;
-                if (!ok) { refresh(); Toast.makeText(activity, "Couldn't restart: root access needed", Toast.LENGTH_SHORT).show(); return; }
+                if (!ok) { refresh(); Toast.makeText(activity, Zh.t("Couldn't restart: root access needed"), Toast.LENGTH_SHORT).show(); return; }
                 synchronized (pending) { pending.clear(); }
                 showingDone=true;status.show(2);changeLabel("Done");
                 main.postDelayed(finishDone,1100);

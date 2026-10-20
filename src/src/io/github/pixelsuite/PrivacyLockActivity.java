@@ -108,7 +108,7 @@ public class PrivacyLockActivity extends Activity {
         started = true;
         KeyguardManager km = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
         if (km == null || !km.isDeviceSecure()) {
-            Toast.makeText(this, "Set a screen lock first to lock apps", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, Zh.t("Set a screen lock first to lock apps"), Toast.LENGTH_LONG).show();
             // Without a screen lock nothing can be checked: a locked app still opens, so the phone stays usable.
             if (PrivacyLock.MODE_OPEN.equals(mode)) proceed();
             else if (PrivacyLock.MODE_CONFIRM.equals(mode)) success();
@@ -145,7 +145,7 @@ public class PrivacyLockActivity extends Activity {
             b.setDescription(why());
             b.setAllowedAuthenticators(BIOMETRIC_ANY);
             b.setConfirmationRequired(false);
-            b.setNegativeButton("Pin", onMain, new DialogInterface.OnClickListener() {
+            b.setNegativeButton(Zh.t("Pin"), onMain, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface d, int which) { toCredential(); }
             });
             BiometricPrompt prompt = b.build();
@@ -192,7 +192,7 @@ public class PrivacyLockActivity extends Activity {
             });
         } catch (Throwable error) {
             Module.log("App lock: screen lock entry unavailable", error);
-            Toast.makeText(this, "Could not check your screen lock", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, Zh.t("Could not check your screen lock"), Toast.LENGTH_SHORT).show();
             done(false);
         }
     }
@@ -264,7 +264,7 @@ public class PrivacyLockActivity extends Activity {
             } catch (Throwable error) { Module.log("App lock: list not saved", error); }
             final boolean saved = ok;
             main.post(new Runnable() { public void run() {
-                Toast.makeText(PrivacyLockActivity.this, !saved ? "Could not save. Is root allowed for Pixel Suite?" : lock ? label + " is locked" : label + " is unlocked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PrivacyLockActivity.this, !saved ? Zh.t("Could not save. Is root allowed for Pixel Suite?") : lock ? Zh.t(label) + "已锁定" : Zh.t(label) + "已解锁", Toast.LENGTH_SHORT).show();
                 done(saved);
             } });
         } }, "PixelSuiteAppLockSave").start();

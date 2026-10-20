@@ -131,8 +131,8 @@ final class FolderSort {
         try { edit.setText((CharSequence) LauncherFeatures.get(info, "title")); } catch (Throwable ignored) { }
         edit.selectAll();
         edit.setPadding(FrostedSurface.dp(a, 20), FrostedSurface.dp(a, 10), FrostedSurface.dp(a, 20), FrostedSurface.dp(a, 10)); edit.setTextSize(16);
-        final android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(a).setTitle("Rename folder").setView(edit)
-                .setNegativeButton("Cancel", null).setPositiveButton("Save", null).create();
+        final android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(a).setTitle(Zh.t("Rename folder")).setView(edit)
+                .setNegativeButton(Zh.t("Cancel"), null).setPositiveButton(Zh.t("Save"), null).create();
         FrostedSurface.show(dialog);
         dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             public void onClick(View button) {
@@ -145,7 +145,7 @@ final class FolderSort {
                     dialog.dismiss();
                 } catch (Throwable error) {
                     Module.log("Home folder rename failed", error);
-                    android.widget.Toast.makeText(a, "Could not save the name", android.widget.Toast.LENGTH_SHORT).show();
+                    android.widget.Toast.makeText(a, Zh.t("Could not save the name"), android.widget.Toast.LENGTH_SHORT).show();
                 }
             }
         });

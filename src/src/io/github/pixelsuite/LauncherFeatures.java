@@ -964,8 +964,8 @@ final class LauncherFeatures {
         if (gridFor(info) == 0) return;
         final LinearLayout footer = (LinearLayout) get(folder, "mFooter");
         if (footer.findViewWithTag("pixelsuite_folder_menu") != null) return;
-        final TextView menu = new TextView(footer.getContext()); menu.setText("\u22ee"); menu.setTextSize(24);
-        menu.setGravity(17); menu.setContentDescription("Folder options"); menu.setTag("pixelsuite_folder_menu");
+        final TextView menu = new TextView(footer.getContext()); menu.setText(Zh.t("\u22ee")); menu.setTextSize(24);
+        menu.setGravity(17); menu.setContentDescription(Zh.t("Folder options")); menu.setTag("pixelsuite_folder_menu");
         footer.addView(menu, new LinearLayout.LayoutParams(dp(footer.getContext(),48), -1));
         menu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -1181,15 +1181,15 @@ final class LauncherFeatures {
         final Activity a = activity.get(); final String key = identity(info); if (a == null || key == null) return;
         final EditText edit = new EditText(a); edit.setSingleLine(true); edit.setText((CharSequence)get(info,"title")); edit.selectAll();
         edit.setPadding(dp(a,24),dp(a,16),dp(a,24),dp(a,16));
-        final AlertDialog dialog=new AlertDialog.Builder(a).setTitle("Rename app").setView(edit).setMessage("This name appears on the home screen, in folders, the app drawer and launcher search.")
-            .setNegativeButton("Cancel",null).setNeutralButton("Reset",new DialogInterface.OnClickListener() {
+        final AlertDialog dialog=new AlertDialog.Builder(a).setTitle(Zh.t("Rename app")).setView(edit).setMessage(Zh.t("This name appears on the home screen, in folders, the app drawer and launcher search."))
+            .setNegativeButton(Zh.t("Cancel"),null).setNeutralButton(Zh.t("Reset"),new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface d,int which) { data.rename(key,""); refresh(); }
-            }).setPositiveButton("Save",null).create();
+            }).setPositiveButton(Zh.t("Save"),null).create();
         FrostedSurface.show(dialog);dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener(){
                 public void onClick(View button) {
                     String value = edit.getText().toString().trim();
                     if (value.length() == 0 || value.length() > 80) { edit.setError("Use a name between 1 and 80 characters"); return; }
-                    if (data.rename(key,value)) { dialog.dismiss();refresh(); } else Toast.makeText(a,"Could not save the name",0).show();
+                    if (data.rename(key,value)) { dialog.dismiss();refresh(); } else Toast.makeText(a,Zh.t("Could not save the name"),0).show();
                 }
         });
     }

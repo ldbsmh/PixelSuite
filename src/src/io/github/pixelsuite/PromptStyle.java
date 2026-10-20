@@ -90,7 +90,7 @@ final class PromptStyle {
             boolean dark = (root.getResources().getConfiguration().uiMode & android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES;
             pin = new TextView(root.getContext());
             pin.setTag("pixelsuite_pin");
-            pin.setText("Pin");   // the same pill on every sheet (also where the sheet says "Use PIN")
+            pin.setText(Zh.t("Pin"));   // the same pill on every sheet (also where the sheet says "Use PIN")
             GradientDrawable pill = new GradientDrawable();
             pill.setCornerRadius(100 * dp);
             pill.setColor(system(root.getContext(), dark ? "system_accent2_700" : "system_accent2_100", dark ? 0xff4a4458 : 0xffe8def8));
@@ -100,7 +100,7 @@ final class PromptStyle {
             pin.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
             try { pin.setTypeface(android.graphics.Typeface.create("google-sans-text-medium", android.graphics.Typeface.NORMAL)); } catch (Throwable ignored) { }
             pin.setGravity(Gravity.CENTER);
-            pin.setContentDescription("Use PIN");
+            pin.setContentDescription(Zh.t("Use PIN"));
             pin.setClickable(true); pin.setFocusable(true);
             pin.setOnClickListener(new View.OnClickListener() { public void onClick(View v) { original.performClick(); } });
             panel.addView(pin, new ViewGroup.MarginLayoutParams(Math.round(150 * dp), Math.round(44 * dp)));

@@ -243,7 +243,7 @@ final class HomeOptions {
         try { c.startActivity(intent, options); }
         catch (Throwable error) {
             Module.log("Pixel Suite settings could not open", error);
-            Toast.makeText(c, "Pixel Suite isn't available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(c, Zh.t("Pixel Suite isn't available"), Toast.LENGTH_SHORT).show();
         }
     }
 

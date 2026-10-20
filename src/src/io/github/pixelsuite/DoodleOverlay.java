@@ -934,7 +934,7 @@ final class DoodleOverlay extends FrameLayout {
             if (i == SHOWN) {
                 moreColors = new View(c);
                 moreColors.setBackground(new RainbowIcon(density));
-                moreColors.setContentDescription("More colours");
+                moreColors.setContentDescription(Zh.t("More colours"));
                 moreColors.setOnClickListener(new OnClickListener() { public void onClick(View v) { setExpanded(true, true); } });
                 colorRow.addView(moreColors, new LinearLayout.LayoutParams(Math.round(colCompact()), rowH()));
             }
@@ -954,12 +954,12 @@ final class DoodleOverlay extends FrameLayout {
         controls.setGravity(Gravity.CENTER_VERTICAL);
         ImageView thin = new ImageView(c);
         thin.setImageDrawable(new StrokeIcon(onSurfaceVariant, density));
-        thin.setContentDescription("Thickness");
+        thin.setContentDescription(Zh.t("Thickness"));
         controls.addView(thin, new LinearLayout.LayoutParams(dp(24), rowH()));
         size = new SeekBar(c);
         size.setMax(23);
         size.setProgress(Math.round(sWidthDp) - 1);
-        size.setContentDescription("Thickness");
+        size.setContentDescription(Zh.t("Thickness"));
         size.setPadding(dp(8), 0, dp(8), 0);
         size.setProgressTintList(android.content.res.ColorStateList.valueOf(accent));
         size.setThumbTintList(android.content.res.ColorStateList.valueOf(accent));
@@ -1127,7 +1127,7 @@ final class DoodleOverlay extends FrameLayout {
                 canvas.drawPath(arrow, p);
             }
         };
-        g.setContentDescription("Make Doodles menu smaller");
+        g.setContentDescription(Zh.t("Make Doodles menu smaller"));
         g.setOnTouchListener(new View.OnTouchListener() {
             float startX, startP; android.view.VelocityTracker vt; boolean moved;
             public boolean onTouch(View v, MotionEvent e) {
@@ -1185,7 +1185,7 @@ final class DoodleOverlay extends FrameLayout {
                 canvas.drawRoundRect(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2, h / 2, h / 2, p);
             }
         };
-        pill.setContentDescription("Move Doodles menu");
+        pill.setContentDescription(Zh.t("Move Doodles menu"));
         pill.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent e) {
                 if (e.getActionMasked() == MotionEvent.ACTION_DOWN && Math.abs(e.getX() - v.getWidth() / 2f) > dp(110)) return false;

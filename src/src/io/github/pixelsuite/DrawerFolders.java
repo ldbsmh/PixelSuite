@@ -1217,7 +1217,7 @@ final class DrawerFolders {
             boolean assigned=false;for(LauncherData.Folder other:folders)if(other.id!=f.id&&other.apps.contains(key))assigned=true;
             if(!assigned){offered.add(app);known.put(key,app);}
         }
-        AppPicker.show(a,creating?"Create folder":"Add apps",offered,new java.util.HashSet<String>(f.apps),2,new AppPicker.Save(){public boolean save(List<String> chosen){
+        AppPicker.show(a,creating?Zh.t("Create folder"):Zh.t("Add apps"),offered,new java.util.HashSet<String>(f.apps),2,new AppPicker.Save(){public boolean save(List<String> chosen){
             List<String> next=new ArrayList<String>();
             for(String key:f.apps)if(chosen.contains(key))next.add(key);
             for(String key:chosen)if(!next.contains(key))next.add(key);
@@ -1229,7 +1229,7 @@ final class DrawerFolders {
     }
     static void renameFolder(final LauncherData.Folder f,final boolean creating){
         Activity a=LauncherFeatures.activity.get();final EditText edit=new EditText(a);edit.setSingleLine();edit.setText(f.name);edit.selectAll();
-        FrostedSurface.show(new AlertDialog.Builder(a).setTitle("Folder name").setView(edit).setNegativeButton("Cancel",null).setPositiveButton("Save",new DialogInterface.OnClickListener(){public void onClick(DialogInterface d,int w){
+        FrostedSurface.show(new AlertDialog.Builder(a).setTitle(Zh.t("Folder name")).setView(edit).setNegativeButton(Zh.t("Cancel"),null).setPositiveButton(Zh.t("Save"),new DialogInterface.OnClickListener(){public void onClick(DialogInterface d,int w){
             String name=edit.getText().toString().trim();if(name.length()>0&&name.length()<=80)f.name=name;choose(f,creating);
         }}).create());
     }

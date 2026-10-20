@@ -1,0 +1,120 @@
+name: 构建中文版 APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: "版本名（留空沿用 src/AndroidManifest.xml）"
+        required: false
+        default: ""
+      version_code:
+        description: "版本号（留空沿用 src/AndroidManifest.xml）"
+        required: false
+        default: ""
+  push:
+    branches: [ main, zh ]
+    paths:
+      - "src/**"
+      - ".github/workflows/build-zh.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BT_VERSION: "34.0.0"
+      API_LEVEL: "35"
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: 下载 Android build-tools 与 platform
+        run: |
+          set -euo pipefail
+          SDK="$RUNNER_TEMP/android-sdk"
+          mkdir -p "$SDK"
+          # build-tools 压缩包内部目录按 API 命名（r34 -> android-14），需展平
+          BT_URL="https://dl.google.com/android/repository/build-tools_r34-linux.zip"
+          PL_URL="https://dl.google.com/android/repository/platform-${API_LEVEL}_r02.zip"
+          echo "下载 build-tools 34.0.0"
+          curl -fsSL "$BT_URL" -o bt.zip
+          echo "下载 platform android-${API_LEVEL}"
+          curl -fsSL "$PL_URL" -o pl.zip
+          mkdir -p "$SDK/build-tools/${BT_VERSION}" "$SDK/platforms/android-${API_LEVEL}"
+          unzip -q bt.zip -d bt_extract
+          unzip -q pl.zip -d pl_extract
+          # 两个压缩包都只有一个顶层目录，把里面的内容搬到标准位置
+          cp -a bt_extract/*/. "$SDK/build-tools/${BT_VERSION}/"
+          cp -a pl_extract/*/. "$SDK/platforms/android-${API_LEVEL}/"
+          chmod +x "$SDK/build-tools/${BT_VERSION}/aapt" "$SDK/build-tools/${BT_VERSION}/zipalign"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          echo "$SDK/build-tools/${BT_VERSION}" >> "$GITHUB_PATH"
+          "$SDK/build-tools/${BT_VERSION}/aapt" version
+          ls "$SDK/platforms/android-${API_LEVEL}/android.jar"
+
+      - name: 编译 dex
+        run: |
+          set -euo pipefail
+          cd src
+          AJ="$ANDROID_HOME/platforms/android-${API_LEVEL}/android.jar"
+          BT="$ANDROID_HOME/build-tools/${BT_VERSION}"
+          rm -rf out && mkdir -p out/stubs out/classes
+          javac -nowarn --release 8 -encoding UTF-8 -cp "$AJ" -d out/stubs $(find stubs -name '*.java')
+          javac -nowarn --release 8 -encoding UTF-8 -cp "out/stubs:$AJ" -d out/classes $(find src -name '*.java')
+          java -Xmx4g -cp "$BT/lib/d8.jar" com.android.tools.r8.D8 \
+            --release --min-api 26 --lib "$AJ" --output out \
+            $(find out/classes -name '*.class')
+          ls -la out/classes.dex
+
+      - name: 编译资源并打包
+        run: |
+          set -euo pipefail
+          cd src
+          AJ="$ANDROID_HOME/platforms/android-${API_LEVEL}/android.jar"
+          BT="$ANDROID_HOME/build-tools/${BT_VERSION}"
+          # res/values-zh-rCN 会被 aapt 自动收录为中文资源
+          "$BT/aapt" package -f -M AndroidManifest.xml -S res -I "$AJ" -0 arsc -F out/unsigned.apk
+          cd out
+          zip -q -0 unsigned.apk classes.dex
+          mkdir -p META-INF/xposed
+          cp ../meta/xposed/java_init.list ../meta/xposed/module.prop ../meta/xposed/scope.list META-INF/xposed/
+          zip -q -X unsigned.apk META-INF/xposed/java_init.list META-INF/xposed/module.prop META-INF/xposed/scope.list
+          # 不签名：只做 4 字节对齐，产物仍是 unsigned
+          "$BT/zipalign" -f -p 4 unsigned.apk PixelSuite-zh-unsigned.apk
+          ls -la PixelSuite-zh-unsigned.apk
+
+      - name: 校验中文资源已进入 APK
+        run: |
+          set -euo pipefail
+          cd src/out
+          BT="$ANDROID_HOME/build-tools/${BT_VERSION}"
+          "$BT/aapt" dump badging PixelSuite-zh-unsigned.apk | head -4
+          echo "--- 是否包含 zh 配置 ---"
+          "$BT/aapt" dump --values resources PixelSuite-zh-unsigned.apk | grep -m3 -A1 'zh' || echo "未找到 zh"
+          echo "--- 中文应用名 ---"
+          "$BT/aapt" dump strings PixelSuite-zh-unsigned.apk | grep -m3 'Pixel 套件' || true
+
+      - name: 上传 APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PixelSuite-zh-unsigned
+          path: src/out/PixelSuite-zh-unsigned.apk
+          retention-days: 30
+
+      - name: 发布到 Release（打 tag 时）
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: src/out/PixelSuite-zh-unsigned.apk
+          name: "Pixel 套件中文版 ${{ github.ref_name }}"
+          body: |
+            简体中文版 Pixel Suite，**未签名**。
+            安装前请用你自己的 keystore 签名。

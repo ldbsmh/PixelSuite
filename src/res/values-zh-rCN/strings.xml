@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pixel 套件</string>
+    <string name="description">手势、Pixel 启动器自定义、应用与文件夹锁定、超级深色模式、文件排序、Pixel 图库与 Google 相册中的免费截图裁剪与涂鸦。所有功能都在 Pixel 套件应用内设置。请启用推荐的作用域（包括你使用的编辑器），然后重启这些应用或重启手机。</string>
+</resources>

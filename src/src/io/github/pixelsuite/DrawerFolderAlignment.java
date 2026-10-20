@@ -127,7 +127,7 @@ final class DrawerFolderAlignment {
         int size=((Number)LauncherFeatures.get(sample,"mIconSize")).intValue();
         ColorDrawable placeholder=new ColorDrawable(0);placeholder.setBounds(0,0,size,size);
         sample.setCompoundDrawables(null,placeholder,null,null);
-        if(sample.getText().length()==0)sample.setText("Ag");
+        if(sample.getText().length()==0)sample.setText(Zh.t("Ag"));
         sample.measure(View.MeasureSpec.makeMeasureSpec(frame.getWidth(),View.MeasureSpec.EXACTLY),View.MeasureSpec.makeMeasureSpec(frame.getHeight(),View.MeasureSpec.EXACTLY));
         sample.layout(0,0,frame.getWidth(),frame.getHeight());
         return new int[]{sample.getPaddingTop(),size,sample.getBaseline()};
